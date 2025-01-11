@@ -4,10 +4,8 @@ import 'package:absensi_apps/config/app_asset.dart';
 import 'package:absensi_apps/config/app_color.dart';
 import 'package:absensi_apps/config/session.dart';
 import 'package:absensi_apps/data/model/user.dart';
-import 'package:absensi_apps/presentation/page/absens/absenpage.dart';
 import 'package:absensi_apps/presentation/page/auth/login_page.dart';
-import 'package:absensi_apps/presentation/page/homepage.dart';
-
+import 'package:absensi_apps/presentation/page/home/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';

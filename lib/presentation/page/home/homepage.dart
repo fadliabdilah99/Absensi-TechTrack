@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:absensi_apps/config/api.dart';
 import 'package:absensi_apps/config/app_color.dart';
 import 'package:absensi_apps/presentation/controller/c_user.dart';
+import 'package:absensi_apps/presentation/page/auth/login_page.dart';
 import 'package:d_info/d_info.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: ProfilePage(),
     );
@@ -26,11 +27,15 @@ class MyApp extends StatelessWidget {
 }
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  int _selectedIndex = 0;
+
   LocationData? _locationData;
   File? _foto;
   bool _isLoading = false;
@@ -82,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       final request = http.MultipartRequest(
         'POST',
-        Uri.parse(Api.absen), // Sesuaikan URL API Anda
+        Uri.parse(Api.absen),
       )
         ..fields['user_id'] = cUser.data.idUser
             .toString() // Ganti sesuai user ID dari sistem Anda
@@ -93,12 +98,11 @@ class _ProfilePageState extends State<ProfilePage> {
       final response = await request.send();
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // setState(() {
-        //   _statusAbsensi = "telah absen";
-        // });
+        // ignore: use_build_context_synchronously
         DInfo.dialogSuccess(context, 'Berhasil melakukan absensi!');
+        // ignore: use_build_context_synchronously
         DInfo.closeDialog(context, actionAfterClose: () {
-          Get.offAll(() => ProfilePage());
+          Get.offAll(() => const ProfilePage());
         });
 
         // Update status absensi pada data user setelah berhasil absen
@@ -130,7 +134,6 @@ class _ProfilePageState extends State<ProfilePage> {
     refresh();
   }
 
-  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       refresh();
@@ -195,8 +198,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Obx(() {
                         return Text(
                           cUser.status.toString(),
-                          style: TextStyle(
-                            color: const Color.fromARGB(255, 255, 255, 255),
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 255, 255, 255),
                             fontSize: 16,
                           ),
                         );
@@ -219,7 +222,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 10),
                   Text(
                     cUser.data.name.toString(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: AppColor.light,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -228,16 +231,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   Obx(() {
                     return Text(
                       cUser.data.kelas.toString(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 16,
                       ),
                     );
                   }),
                   const SizedBox(height: 20),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: const [
+                    children: [
                       StatWidget(label: 'Follows', value: '235'),
                       StatWidget(label: 'Views', value: '935'),
                       StatWidget(label: 'Vouches', value: '64'),
@@ -258,7 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Text(
                             'Lokasi: ${_locationData!.latitude}, ${_locationData!.longitude}',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16,
                               color: AppColor.primary,
                               fontWeight: FontWeight.bold,
@@ -282,7 +285,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
-                              side: BorderSide(color: Colors.white70),
+                              side: const BorderSide(color: Colors.white70),
                             ),
                           ),
                           icon: const Icon(
@@ -309,7 +312,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
-                              side: BorderSide(color: Colors.white70),
+                              side: const BorderSide(color: Colors.white70),
                             ),
                           ),
                           icon: const Icon(
@@ -417,11 +420,85 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColor.primary,
+              spreadRadius: 0,
+              blurRadius: 0,
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.shopping_cart_outlined,
+                color: Colors.white,
+              ),
+              label: 'Shop',
+            ),
+            BottomNavigationBarItem(
+              icon: CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 30,
+                child: Icon(
+                  Icons.qr_code_2_sharp,
+                  color: Colors.black,
+                  size: 45,
+                ),
+              ),
+              label: 'Bayar',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.history_rounded,
+                color: Colors.white,
+              ),
+              label: 'Favorit',
+            ),
+          ],
+          backgroundColor: const Color.fromARGB(0, 211, 211, 211),
+          selectedItemColor: const Color.fromARGB(255, 202, 202, 202),
+          unselectedItemColor: Colors.white,
+          currentIndex: _selectedIndex,
+        ),
+      ),
     );
   }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+
+      switch (_selectedIndex) {
+        case 0:
+          break;
+        case 1:
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LoginPage(),
+            ),
+          );
+          break;
+        case 2:
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LoginPage(),
+            ),
+          );
+          break;
+      }
+    });
+  }
 }
-
-
 
 class StatWidget extends StatelessWidget {
   final String label;

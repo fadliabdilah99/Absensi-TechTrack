@@ -1,7 +1,7 @@
 import 'package:absensi_apps/config/app_asset.dart';
 import 'package:absensi_apps/config/app_color.dart';
 import 'package:absensi_apps/data/source/source_user.dart';
-import 'package:absensi_apps/presentation/page/absens/absenpage.dart';
+import 'package:absensi_apps/presentation/page/home/homePage.dart';
 import 'package:d_info/d_info.dart';
 import 'package:d_view/d_view.dart';
 import 'package:flutter/material.dart';
@@ -30,14 +30,14 @@ class _LoginPageState extends State<LoginPage> {
       if (success) {
         DInfo.dialogSuccess(context, 'Berhasil Login');
         DInfo.closeDialog(context, actionAfterClose: () {
-          Get.off(() => AbsensiApp());
+          Get.off(() => ProfilePage());
         });
       } else {
         DInfo.dialogError(context, 'Gagal Login');
         DInfo.closeDialog(context);
       }
     } else {
-      // Show a snackbar if the form is not valid
+
       Get.snackbar(
         'Error',
         'Harap Lengkapi Data',
